@@ -16,7 +16,7 @@ export async function getApiActivity(apiUrl: string): Promise<ApiActivity> {
 }
 
 const getMockData = (): ApiActivity => {
-  const data = []
+  const data: [UnixTime, number][] = []
 
   const HOW_MANY_DAYS = 14
   const START = UnixTime.now().toStartOf('day').add(-HOW_MANY_DAYS, 'days')
@@ -25,11 +25,37 @@ const getMockData = (): ApiActivity => {
     data.push([START.add(i, 'days'), 100_000 + i * 10_000])
   }
 
+  const arbitrumData: [UnixTime, number][] = data.map((d) => [d[0], d[1] * 0.6])
+  const optimismData: [UnixTime, number][] = data.map((d) => [d[0], d[1] * 0.3])
+  const dydxData: [UnixTime, number][] = data.map((d) => [d[0], d[1] * 0.1])
+
   return {
     combined: {
       types: ['timestamp', 'daily tx count'] as ['timestamp', 'daily tx count'],
-      data: data as [UnixTime, number][],
+      data: data,
     },
-    projects: {},
+    projects: {
+      arbitrum: {
+        types: ['timestamp', 'daily tx count'] as [
+          'timestamp',
+          'daily tx count',
+        ],
+        data: arbitrumData,
+      },
+      optimism: {
+        types: ['timestamp', 'daily tx count'] as [
+          'timestamp',
+          'daily tx count',
+        ],
+        data: optimismData,
+      },
+      dydx: {
+        types: ['timestamp', 'daily tx count'] as [
+          'timestamp',
+          'daily tx count',
+        ],
+        data: dydxData,
+      },
+    },
   }
 }
